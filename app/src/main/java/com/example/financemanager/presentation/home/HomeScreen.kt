@@ -1,45 +1,95 @@
 package com.example.financemanager.presentation.home
 
-import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.financemanager.R
+import com.example.financemanager.domain.model.Transaction
+import com.example.financemanager.domain.model.TransactionCategories
+import com.example.financemanager.domain.model.TransactionType
 import com.example.financemanager.presentation.components.BottomBar
+import com.example.financemanager.presentation.components.CardCategory
 import com.example.financemanager.presentation.components.TopBarHome
+import com.example.financemanager.presentation.home.components.BalanceComponent
+import com.example.financemanager.presentation.home.components.ProgressBarComponent
+import com.example.financemanager.presentation.home.components.StatisticComponent
 import com.example.financemanager.ui.theme.CaribbeanGreen
 import com.example.financemanager.ui.theme.HoneyDew
-import com.example.financemanager.ui.theme.OceanBlue
-import com.example.financemanager.ui.theme.PoppinsFontFamily
 import com.example.financemanager.ui.theme.Void
+import java.time.LocalDate
+import java.util.UUID
 
 @Composable
 fun HomeScreen() {
+    val listTransaction = listOf(
+        Transaction(
+            id = UUID.randomUUID(),
+            title = "Food",
+            message = "TEST MESSAGE",
+            amount = 100.1,
+            type = TransactionType.EXPENSE,
+            category = TransactionCategories.FOOD,
+            date = LocalDate.now()
+        ),
+        Transaction(
+            id = UUID.randomUUID(),
+            title = "Groceries",
+            message = "TEST MESSAGE",
+            amount = 20.2,
+            type = TransactionType.EXPENSE,
+            category = TransactionCategories.GROCERIES,
+            date = LocalDate.now()
+        ),
+        Transaction(
+            id = UUID.randomUUID(),
+            title = "Medicine",
+            message = "TEST MESSAGE",
+            amount = 56.4,
+            type = TransactionType.EXPENSE,
+            category = TransactionCategories.MEDICINE,
+            date = LocalDate.now()
+        ),Transaction(
+            id = UUID.randomUUID(),
+            title = "Entertainment",
+            message = "TEST MESSAGE",
+            amount = 35.4,
+            type = TransactionType.EXPENSE,
+            category = TransactionCategories.ENTERTAINMENT,
+            date = LocalDate.now()
+        ),Transaction(
+            id = UUID.randomUUID(),
+            title = "Salary",
+            message = "TEST MESSAGE",
+            amount = 1_00_000.4,
+            type = TransactionType.INCOME,
+            category = TransactionCategories.SALARY,
+            date = LocalDate.now()
+        ),Transaction(
+            id = UUID.randomUUID(),
+            title = "Gifts",
+            message = "TEST MESSAGE",
+            amount = 150.00,
+            type = TransactionType.EXPENSE,
+            category = TransactionCategories.GIFTS,
+            date = LocalDate.now()
+        ),
+    )
+
     Scaffold(
         containerColor = CaribbeanGreen,
         topBar = {
@@ -66,77 +116,8 @@ fun HomeScreen() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(IntrinsicSize.Min),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Column() {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.income),
-                            contentDescription = "Income icon",
-                            modifier = Modifier.size(12.dp),
-                            tint = Void
-                        )
+                BalanceComponent()
 
-                        Spacer(modifier = Modifier.size(5.dp))
-
-                        Text(
-                            text = "Total Balance",
-                            fontFamily = PoppinsFontFamily,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = Void
-                        )
-                    }
-                    Text(
-                        text = "$7,783.00",
-                        fontFamily = PoppinsFontFamily,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = HoneyDew
-                    )
-                }
-                VerticalDivider(
-                    thickness = 1.dp,
-                    color = HoneyDew,
-                    modifier = Modifier.padding(vertical = 5.dp)
-                )
-                Column() {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.expense_vector),
-                            contentDescription = "Expense icon",
-                            modifier = Modifier.size(12.dp),
-                            tint = Void
-                        )
-
-                        Spacer(modifier = Modifier.size(5.dp))
-
-                        Text(
-                            text = "Total expense",
-                            fontFamily = PoppinsFontFamily,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = Void
-                        )
-                    }
-
-                    Text(
-                        text = "-$7,783.00",
-                        fontFamily = PoppinsFontFamily,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = OceanBlue
-                    )
-                    }
-                }
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
@@ -146,58 +127,10 @@ fun HomeScreen() {
                         .align(Alignment.CenterHorizontally),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    Text(
-                        text = "30%",
-                        fontFamily = PoppinsFontFamily,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = HoneyDew,
-                        modifier = Modifier.padding(start = 10.dp)
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(0.7f)
-                            .height(25.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                            .align(Alignment.CenterEnd)
-                            .background(HoneyDew),
-                        contentAlignment = Alignment.CenterEnd
-                    ) {
-                        Text(
-                            text = "$20,000.00",
-                            fontFamily = PoppinsFontFamily,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = Void,
-                            modifier = Modifier.padding(end = 10.dp)
-                        )
-                    }
+                    ProgressBarComponent()
                 }
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.check_vector),
-                        contentDescription = "Check Icon",
-                        tint = Void,
-                        modifier = Modifier.size(12.dp)
-                    )
-
-                    Spacer(Modifier.size(5.dp))
-
-                    Text(
-                        text = "30% of your expenses, looks good.",
-                        fontFamily = PoppinsFontFamily,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = Void,
-                    )
-                }
+                StatisticComponent()
             }
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -209,13 +142,20 @@ fun HomeScreen() {
                         .fillMaxWidth()
                         .fillMaxHeight(0.9f)
                         .clip(RoundedCornerShape(topStart = 72.dp, topEnd = 72.dp))
-                        .background(HoneyDew),
+                        .background(HoneyDew)
+                        .padding(top = 50.dp, start = 5.dp, end = 5.dp, bottom = 10.dp),
                 ) {
-
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(30.dp)
+                    ) {
+                        items(listTransaction) { transaction ->
+                            CardCategory(transaction)
+                        }
+                    }
                 }
             }
         }
-        }
+    }
 
 }
 
