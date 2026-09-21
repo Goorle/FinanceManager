@@ -1,4 +1,4 @@
-package com.example.financemanager.presentation.home.components
+package com.example.financemanager.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -1,4 +1,4 @@
-package com.example.financemanager.presentation.components
+package com.example.financemanager.presentation.components.topbars
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -25,7 +25,9 @@ import com.example.financemanager.ui.theme.Void
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarHome() {
+fun TopBarHome(
+    onClickNotification: () -> Unit = {}
+) {
     TopAppBar(
         title = {
             Column {
@@ -47,7 +49,7 @@ fun TopBarHome() {
         },
         actions = {
             IconButton(
-                onClick = {},
+                onClick = onClickNotification,
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = HoneyDew
                 ),

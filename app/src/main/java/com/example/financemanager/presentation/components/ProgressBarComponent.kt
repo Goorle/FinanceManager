@@ -1,7 +1,8 @@
-package com.example.financemanager.presentation.home.components
+package com.example.financemanager.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,35 +22,45 @@ import com.example.financemanager.ui.theme.Void
 
 @Composable
 fun ProgressBarComponent() {
-    Box(
-        modifier = Modifier.fillMaxSize()
+    Column (
     ){
-        Text(
-            text = "30%",
-            fontFamily = PoppinsFontFamily,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Normal,
-            color = HoneyDew,
-            modifier = Modifier.padding(start = 10.dp)
-        )
-
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
+                .fillMaxWidth(0.8f)
                 .height(25.dp)
                 .clip(RoundedCornerShape(14.dp))
-                .align(Alignment.CenterEnd)
-                .background(HoneyDew),
-            contentAlignment = Alignment.CenterEnd
+                .background(Void)
+                .align(Alignment.CenterHorizontally),
+            contentAlignment = Alignment.CenterStart
         ) {
+
             Text(
-                text = "$20,000.00",
+                text = "30%",
                 fontFamily = PoppinsFontFamily,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
-                color = Void,
-                modifier = Modifier.padding(end = 10.dp)
+                color = HoneyDew,
+                modifier = Modifier.padding(start = 10.dp)
             )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .height(25.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .align(Alignment.CenterEnd)
+                    .background(HoneyDew),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Text(
+                    text = "$20,000.00",
+                    fontFamily = PoppinsFontFamily,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Void,
+                    modifier = Modifier.padding(end = 10.dp)
+                )
+            }
         }
     }
 }
