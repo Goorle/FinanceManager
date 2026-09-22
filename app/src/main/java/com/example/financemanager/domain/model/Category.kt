@@ -1,7 +1,9 @@
 package com.example.financemanager.domain.model
 
 import com.example.financemanager.R
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class Category(
     val displayName: String,
     val icon: Int
