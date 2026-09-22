@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.example.financemanager.R
 import com.example.financemanager.domain.model.Category
 import com.example.financemanager.presentation.components.BalanceComponent
+import com.example.financemanager.presentation.components.BalanceOverview
 import com.example.financemanager.presentation.components.ProgressBarComponent
 import com.example.financemanager.presentation.components.StatisticComponent
 import com.example.financemanager.ui.theme.HoneyDew
@@ -44,17 +45,7 @@ fun CategoriesScreen(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.2f),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly
-        ) {
-            BalanceComponent()
-            ProgressBarComponent()
-            StatisticComponent()
-        }
+        BalanceOverview()
         Box(
             modifier = Modifier
                 .fillMaxSize()
