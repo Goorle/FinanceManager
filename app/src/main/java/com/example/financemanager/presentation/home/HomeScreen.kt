@@ -23,6 +23,7 @@ import com.example.financemanager.domain.model.TransactionCategories
 import com.example.financemanager.domain.model.TransactionType
 import com.example.financemanager.presentation.components.CardCategory
 import com.example.financemanager.presentation.components.BalanceComponent
+import com.example.financemanager.presentation.components.BalanceOverview
 import com.example.financemanager.presentation.components.ProgressBarComponent
 import com.example.financemanager.presentation.home.components.SegmentedComponent
 import com.example.financemanager.presentation.components.StatisticComponent
@@ -35,19 +36,7 @@ import java.util.UUID
 fun HomeScreen() {
     val listTransaction: List<Transaction> = listOf()
     Column{
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.2f),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly
-        ) {
-            BalanceComponent()
-            ProgressBarComponent()
-            StatisticComponent()
-        }
-
-
+        BalanceOverview()
             Box(
                 modifier = Modifier
                     .fillMaxSize()
