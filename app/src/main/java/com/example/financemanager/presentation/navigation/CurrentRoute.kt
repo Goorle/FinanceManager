@@ -23,6 +23,10 @@ fun currentRoute(backStackEntry: NavBackStackEntry?): RoutesScreen? {
         return backStackEntry.toRoute<RoutesScreen.CategoryDetails>()
     }
 
+    if (destination.hierarchy.any{ it.hasRoute(RoutesScreen.AddExpense::class)}) {
+        return backStackEntry.toRoute<RoutesScreen.AddExpense>()
+    }
+
     return simpleRoutes.firstOrNull{route ->
         destination.hierarchy.any{it.hasRoute(route::class)}
     }
