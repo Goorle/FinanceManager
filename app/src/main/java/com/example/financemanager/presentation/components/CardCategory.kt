@@ -43,7 +43,6 @@ import com.example.financemanager.ui.theme.VividBlue
 import com.example.financemanager.ui.theme.Void
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ofPattern
-import java.util.UUID
 
 @Composable
 fun CardCategory(transaction: Transaction) {
@@ -117,6 +116,7 @@ fun CardCategory(transaction: Transaction) {
                 text = transaction.message,
                 fontFamily = PoppinsFontFamily,
                 fontSize = 12.sp,
+                textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Normal,
                 color = FenceGreen,
                 maxLines = 1,
@@ -131,7 +131,7 @@ fun CardCategory(transaction: Transaction) {
             Text(
                 modifier = Modifier.width(100.dp),
                 textAlign = TextAlign.Center,
-                text = if (transaction.type == TransactionType.EXPENSE) "-$${transaction.amount}" else "+$${transaction.amount}",
+                text = if (transaction.type == TransactionType.EXPENSE) "-${transaction.amount} ₽" else "+${transaction.amount} ₽",
                 fontFamily = PoppinsFontFamily,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
@@ -180,7 +180,7 @@ fun getIconIdFromCategory(category: TransactionCategories): Int {
 @Composable
 fun CardPreview() {
     val transaction = Transaction(
-        id = UUID.randomUUID(),
+        id = 1,
         title = "Salary",
         message = "TEST MESSAGE",
         amount = 120.4,
