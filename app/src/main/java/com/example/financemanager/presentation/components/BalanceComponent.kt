@@ -13,14 +13,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.financemanager.R
 import com.example.financemanager.domain.model.TransactionType
+import com.example.financemanager.presentation.components.viewModel.BalanceViewModel
 import com.example.financemanager.ui.theme.HoneyDew
 import com.example.financemanager.ui.theme.OceanBlue
 import com.example.financemanager.ui.theme.PoppinsFontFamily
@@ -28,26 +33,39 @@ import com.example.financemanager.ui.theme.Void
 
 
 @Composable
-fun BalanceComponent() {
+fun BalanceComponent(
+    viewModel: BalanceViewModel = hiltViewModel()
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        Component(TransactionType.INCOME)
+        Component(
+            transactionType = TransactionType.INCOME,
+            viewModel
+        )
         VerticalDivider(
             thickness = 1.dp,
             color = HoneyDew,
             modifier = Modifier.padding(vertical = 5.dp)
         )
-        Component(TransactionType.EXPENSE)
+        Component(
+            transactionType = TransactionType.EXPENSE,
+            viewModel
+
+        )
     }
 }
 
 @Composable
-fun Component(transactionType: TransactionType) {
-
+fun Component(
+    transactionType: TransactionType,
+    balanceViewModel: BalanceViewModel = hiltViewModel()
+    ) {
+    val totalExpense by balanceViewModel.totalExpense.collectAsStateWithLifecycle()
+    val totalBalance by balanceViewModel.totalBalance.collectAsStateWithLifecycle()
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -86,10 +104,10 @@ fun Component(transactionType: TransactionType) {
         Text(
             text = when(transactionType) {
                 TransactionType.INCOME -> {
-                    "$7,783.00"
+                    "${"%.2f".format(totalBalance)} ₽"
                 }
                 TransactionType.EXPENSE -> {
-                    "$-700.00"
+                    "${"%.2f".format(totalExpense)} ₽"
                 }
             },
             fontFamily = PoppinsFontFamily,
