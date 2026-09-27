@@ -152,7 +152,7 @@ fun getIconIdFromCategory(category: TransactionCategories): Int {
 @Composable
 fun CardPreview() {
     val transaction = Transaction(
-        id = UUID.randomUUID(),
+        id = 1,
         title = "Salary",
         message = "TEST MESSAGE",
         amount = 120.4,
