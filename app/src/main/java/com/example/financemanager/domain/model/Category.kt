@@ -16,5 +16,6 @@ enum class Category(
     GIFTS("Gifts", R.drawable.presents_vector),
     SAVINGS("Savings", R.drawable.savings_vector),
     ENTERTAINMENT("Entertainment", R.drawable.entertainment_vector),
+    SALARY("Salary", R.drawable.salary_vector),
     MORE("More", R.drawable.plus_vector)
 }
