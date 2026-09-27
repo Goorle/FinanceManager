@@ -13,7 +13,7 @@ sealed class RoutesScreen(@Transient val  route: String = "") {
     object Categories: RoutesScreen("Categories")
     @Serializable data class CategoryDetails(val category: Category): RoutesScreen("Category")
     @Serializable
-    object AddExtension: RoutesScreen("Add Extension")
+    object AddExpense: RoutesScreen("Add Expense")
     @Serializable
     object Analysis: RoutesScreen("Analysis")
     @Serializable
