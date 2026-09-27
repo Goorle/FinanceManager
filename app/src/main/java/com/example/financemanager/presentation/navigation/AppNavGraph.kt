@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.financemanager.domain.model.Category
+import com.example.financemanager.presentation.addExpenses.AddExpenseScreen
 import com.example.financemanager.presentation.categories.CategoriesScreen
 import com.example.financemanager.presentation.categories.CategoryDetails
 import com.example.financemanager.presentation.home.HomeScreen
@@ -28,10 +29,18 @@ fun AppNavGraph(
                 }
             )
         }
-        composable<RoutesScreen.CategoryDetails> { backStackEntry ->
-            val args = backStackEntry.toRoute<RoutesScreen.CategoryDetails>()
-            CategoryDetails(args.category)
+        composable<RoutesScreen.CategoryDetails> {
+            CategoryDetails(
+                onClickAddExpense = {
+                    appNavController.navigate(RoutesScreen.AddExpense)
+                }
+            )
         }
+
+        composable<RoutesScreen.AddExpense> {
+            AddExpenseScreen()
+        }
+
         composable<RoutesScreen.Profile> {  }
         composable<RoutesScreen.Analysis>{}
         composable<RoutesScreen.Transaction>{}
