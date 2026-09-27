@@ -30,6 +30,7 @@ fun AppScaffold() {
 
     val selectedBottomTab: RoutesScreen = when(currentRoute) {
         is RoutesScreen.CategoryDetails -> RoutesScreen.Categories
+        is RoutesScreen.AddExpense -> RoutesScreen.Categories
         else -> currentRoute ?: RoutesScreen.Home
     }
 
