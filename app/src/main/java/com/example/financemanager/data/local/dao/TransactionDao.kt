@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TransactionDao {
-    @Query("SELECT * FROM `transaction` ORDER BY date DESC")
+    @Query("SELECT * FROM `transaction` ORDER BY date DESC, id DESC")
     fun getAllTransactions(): Flow<List<TransactionEntity>>
 
     @Query("SELECT * FROM `transaction` WHERE category = :category")
     fun getTransactionByCategory(category: String): Flow<List<TransactionEntity>>
 
-    @Query("SELECT COALESCE(SUM(amount), 0.0) FROM `transaction` WHERE type = :type")
+    @Query("SELECT COALESCE(SUM(amount), 0.0) FROM `transaction` WHERE type = :type ORDER BY date DESC, id DESC")
     fun getTotalByType(type: String): Flow<Double>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
