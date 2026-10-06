@@ -4,7 +4,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 data class Transaction(
-    val id: Long,
+    val id: Long = 0,
     val title: String,
     val message: String,
     val amount: Double,
