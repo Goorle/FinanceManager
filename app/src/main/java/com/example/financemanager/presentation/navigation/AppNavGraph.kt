@@ -38,7 +38,11 @@ fun AppNavGraph(
         }
 
         composable<RoutesScreen.AddExpense> {
-            AddExpenseScreen()
+            AddExpenseScreen(
+                back = {
+                    appNavController.popBackStack()
+                }
+            )
         }
 
         composable<RoutesScreen.Profile> {  }
