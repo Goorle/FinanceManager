@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,7 +27,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.financemanager.R
-import com.example.financemanager.domain.model.Category
 import com.example.financemanager.domain.model.Transaction
 import com.example.financemanager.domain.model.TransactionCategories
 import com.example.financemanager.domain.model.TransactionType
@@ -40,7 +38,6 @@ import com.example.financemanager.ui.theme.VividBlue
 import com.example.financemanager.ui.theme.Void
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ofPattern
-import java.util.UUID
 
 @Composable
 fun CardTransaction(transaction: Transaction) {
@@ -142,7 +139,7 @@ fun getIconIdFromCategory(category: TransactionCategories): Int {
         TransactionCategories.SALARY -> {
             R.drawable.salary_vector
         }
-        TransactionCategories.OTHER -> {
+        TransactionCategories.MORE -> {
             R.drawable.plus_vector
         }
     }

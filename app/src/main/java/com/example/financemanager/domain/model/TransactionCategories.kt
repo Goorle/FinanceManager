@@ -10,5 +10,5 @@ enum class TransactionCategories(vararg val types: TransactionType){
     SAVINGS(TransactionType.INCOME),
     ENTERTAINMENT(TransactionType.EXPENSE),
     SALARY(TransactionType.INCOME),
-    OTHER(TransactionType.EXPENSE, TransactionType.INCOME)
+    MORE(TransactionType.EXPENSE, TransactionType.INCOME)
 }

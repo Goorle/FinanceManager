@@ -170,7 +170,7 @@ fun getIconIdFromCategory(category: TransactionCategories): Int {
         TransactionCategories.SALARY -> {
             R.drawable.salary_vector
         }
-        TransactionCategories.OTHER -> {
+        TransactionCategories.MORE -> {
             R.drawable.plus_vector
         }
     }
