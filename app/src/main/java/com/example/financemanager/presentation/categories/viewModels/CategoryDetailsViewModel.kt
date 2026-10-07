@@ -18,7 +18,7 @@ class CategoryDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: TransactionRepository
 ): ViewModel() {
-    private val category = savedStateHandle.toRoute<RoutesScreen.CategoryDetails>().category
+    val category = savedStateHandle.toRoute<RoutesScreen.CategoryDetails>().category
 
     val transaction = repository.getTransactionByCategory(category.name)
         .stateIn(
