@@ -13,10 +13,10 @@ interface TransactionDao {
     @Query("SELECT * FROM `transaction` ORDER BY date DESC, id DESC")
     fun getAllTransactions(): Flow<List<TransactionEntity>>
 
-    @Query("SELECT * FROM `transaction` WHERE category = :category")
+    @Query("SELECT * FROM `transaction` WHERE category = :category ORDER BY date DESC, id DESC")
     fun getTransactionByCategory(category: String): Flow<List<TransactionEntity>>
 
-    @Query("SELECT COALESCE(SUM(amount), 0.0) FROM `transaction` WHERE type = :type ORDER BY date DESC, id DESC")
+    @Query("SELECT COALESCE(SUM(amount), 0.0) FROM `transaction` WHERE type = :type")
     fun getTotalByType(type: String): Flow<Double>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
