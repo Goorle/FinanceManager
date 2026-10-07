@@ -48,7 +48,7 @@ import java.util.UUID
 @Composable
 fun CategoryDetails(
     viewModel: CategoryDetailsViewModel = hiltViewModel(),
-    onClickAddExpense: () -> Unit
+    onClickAddExpense: (Category) -> Unit
 ) {
     val transaction by viewModel.transaction.collectAsStateWithLifecycle()
 
@@ -82,7 +82,7 @@ fun CategoryDetails(
 
                 Button(
                     onClick = {
-                        onClickAddExpense()
+                        onClickAddExpense(viewModel.category)
                     },
                     modifier = Modifier
                         .height(50.dp)
