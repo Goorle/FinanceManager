@@ -1,63 +1,154 @@
 package com.example.financemanager.presentation.addExpenses
 
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.example.financemanager.domain.model.Transaction
 import com.example.financemanager.domain.model.TransactionCategories
 import com.example.financemanager.domain.model.TransactionType
 import com.example.financemanager.domain.model.repositoiry.TransactionRepository
+import com.example.financemanager.presentation.navigation.RoutesScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
 
 
 @HiltViewModel
 class AddExpenseViewModel @Inject constructor(
-    private val repository: TransactionRepository
+    private val repository: TransactionRepository,
+    savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    var expandedDropDownMenu by mutableStateOf(false)
-    var textSelectCategory by mutableStateOf("Select category")
-    var textSelectAmount by mutableStateOf("")
-    var textSelectTitle by mutableStateOf("")
-    var textSelectMessage by mutableStateOf("")
-    var showDatePicker by mutableStateOf(false)
 
-    var currentDate by mutableStateOf(LocalDate.now())
+    val category = savedStateHandle.toRoute<RoutesScreen.CategoryDetails>().category
+    private val _uiState = MutableStateFlow(AddExpenseUiState())
+    val uiState: StateFlow<AddExpenseUiState> = _uiState.asStateFlow()
+
+    private val _events = Channel<TransactionEvent>()
+    val events = _events.receiveAsFlow()
 
     init {
-
-    }
-    fun changeDate(newDate: Long) {
-        currentDate = Instant.ofEpochMilli(newDate).atZone(ZoneId.systemDefault()).toLocalDate()
+        selectCategory(category.name)
     }
 
-    fun addExpense() {
-        val transaction = Transaction(
-            title = textSelectTitle,
-            message = textSelectMessage,
-            amount = textSelectAmount.toDouble(),
-            category = TransactionCategories.valueOf(textSelectCategory),
-            date = currentDate,
-            type = getType(textSelectCategory)
-        )
+    fun onAmountChanged(value: String) {
+        _uiState.update {
+            it.copy(amount = value.replace(',', '.'), amountError = null)
+        }
+    }
+
+    fun selectCategory(category: String) {
+        _uiState.update{
+            it.copy(selectedCategory = category, categoryError = null)
+        }
+    }
+
+    fun selectedDate(newDate: Long) {
+        val newDate = Instant.ofEpochMilli(newDate).atZone(ZoneId.systemDefault()).toLocalDate()
+        _uiState.update{
+            it.copy(selectedDate = newDate)
+        }
+    }
+
+    fun titleChanged(title: String) {
+        _uiState.update{
+            it.copy(selectTitle = title, titleError = null)
+        }
+    }
+
+    fun messageChanged(message: String) {
+        _uiState.update {
+            it.copy(selectMessage = message, messageError = null)
+        }
+    }
+
+    fun changeExpandDropDownMenu(isOpen: Boolean) {
+        _uiState.update{
+            it.copy(expandedDropDownMenu = isOpen)
+        }
+    }
+
+    fun showDateDialog(isShow: Boolean) {
+        _uiState.update {
+            it.copy(showDatePicker = isShow)
+        }
+    }
+
+    suspend fun validateTransaction(): Boolean {
+        val state = _uiState.value
+
+        val amountValue = state.amount.toDoubleOrNull()
+        val amountError = when {
+            state.amount.isBlank() -> "Введите сумму"
+            amountValue == null -> "Неккоректная сумма"
+            amountValue <= 0 -> "Сумма должна быть больше нуля"
+            else -> {
+                null
+            }
+        }
+        val categoryError = if (state.selectedCategory.isEmpty()) "Выберите категорию" else null
+        val titleError = if (state.selectTitle.isEmpty()) "Выберите название" else null
+        val messageError = if(state.selectMessage.isEmpty()) "Напишите сообщение" else null
+
+        if (amountError != null || categoryError != null || titleError != null || messageError != null) {
+            _uiState.update {
+                it.copy(
+                    amountError = amountError,
+                    categoryError = categoryError,
+                    titleError = titleError,
+                    messageError = messageError
+                )
+            }
+            _events.send(TransactionEvent.Error("Не удалость сохранить"))
+            return false
+        }
+        return  true
+
+    }
+    fun saveTransaction() {
+
         viewModelScope.launch {
+            val state = _uiState.value
             try {
-                repository.addTransaction(transaction)
-                Log.d("Transaction", "Success")
+                if (validateTransaction()) {
+                    _uiState.update {
+                        it.copy(
+                            isSaving = true
+                        )
+                    }
+                    val transaction = Transaction(
+                        title = state.selectTitle,
+                        message = state.selectMessage,
+                        amount = state.amount.toDouble(),
+                        category = TransactionCategories.valueOf(state.selectedCategory),
+                        date = state.selectedDate,
+                        type = getType(state.selectedCategory)
+                    )
+
+                    repository.addTransaction(transaction)
+                    _events.send(TransactionEvent.SavedSuccessfully)
+                }
             } catch (e: Exception) {
-                Log.e("Transaction", e.message.toString())
+                _events.send(TransactionEvent.Error("Не удалость сохранить: ${e.message}"))
+            } finally {
+                _uiState.update {
+                    it.copy(
+                        isSaving = false
+                    )
+                }
             }
 
         }
     }
+
 
     fun getType(category: String): TransactionType  {
         return when(category) {

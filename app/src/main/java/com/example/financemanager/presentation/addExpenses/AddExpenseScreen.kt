@@ -13,12 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSizeIn
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -34,48 +30,59 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.financemanager.R
-import com.example.financemanager.domain.model.Category
 import com.example.financemanager.domain.model.TransactionCategories
-import com.example.financemanager.presentation.navigation.RoutesScreen
 import com.example.financemanager.ui.theme.CaribbeanGreen
-import com.example.financemanager.ui.theme.Cyprus
+import com.example.financemanager.ui.theme.ErrorRedDark
+import com.example.financemanager.ui.theme.ErrorRedLight
 import com.example.financemanager.ui.theme.FenceGreen
 import com.example.financemanager.ui.theme.HoneyDew
 import com.example.financemanager.ui.theme.LightGreen
 import com.example.financemanager.ui.theme.PoppinsFontFamily
 import com.example.financemanager.ui.theme.Void
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 
 @Composable
 fun AddExpenseScreen(
     viewModel: AddExpenseViewModel = hiltViewModel(),
-    back: () -> Unit
+    snackbarHostState: SnackbarHostState,
+    onExpenseSaved: () -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when(event){
+                is TransactionEvent.Error -> snackbarHostState.showSnackbar(event.message)
+                TransactionEvent.SavedSuccessfully -> onExpenseSaved()
+            }
+
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -95,16 +102,18 @@ fun AddExpenseScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceEvenly,
             ) {
-                SelectDateComponent(viewModel)
-                SelectCategoryComponent(viewModel)
-                SelectAmountComponent(viewModel)
-                SelectExpenseTitleComponent(viewModel)
-                SelectExpenseMessageComponent(viewModel)
+                SelectDateComponent(
+                    viewModel,
+                    uiState
+                )
+                SelectCategoryComponent(viewModel, uiState)
+                SelectAmountComponent(viewModel, uiState)
+                SelectExpenseTitleComponent(viewModel, uiState)
+                SelectExpenseMessageComponent(viewModel, uiState)
 
                 Button(
                     onClick = {
-                        viewModel.addExpense()
-                        back()
+                        viewModel.saveTransaction()
                     },
                     modifier = Modifier
                         .fillMaxWidth(0.5f),
@@ -121,7 +130,7 @@ fun AddExpenseScreen(
                     )
                 }
 
-                if (viewModel.showDatePicker) {
+                if (uiState.showDatePicker) {
                     ShowSelectDate(viewModel)
                 }
             }
@@ -129,16 +138,18 @@ fun AddExpenseScreen(
     }
 }
 
+
 @Composable
 fun SelectDateComponent(
-    viewModel: AddExpenseViewModel
+    viewModel: AddExpenseViewModel,
+    uiState: AddExpenseUiState
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth(0.8f)
             .height(75.dp)
             .clickable{
-                viewModel.showDatePicker = true
+                viewModel.showDateDialog(true)
             },
     ) {
         Text(
@@ -160,7 +171,7 @@ fun SelectDateComponent(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = viewModel.currentDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                text = uiState.selectedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
                 fontSize = 14.sp,
                 fontFamily = PoppinsFontFamily,
                 fontWeight = FontWeight.Normal,
@@ -168,7 +179,7 @@ fun SelectDateComponent(
             )
             IconButton(
                 onClick = {
-                    viewModel.showDatePicker = true
+                    viewModel.showDateDialog(true)
                 },
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = CaribbeanGreen
@@ -191,21 +202,21 @@ fun SelectDateComponent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowSelectDate(
-    viewModel: AddExpenseViewModel
+    viewModel: AddExpenseViewModel,
 ) {
     val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
 
     DatePickerDialog(
         onDismissRequest = {
-            viewModel.showDatePicker = false
+            viewModel.showDateDialog( false)
         },
         confirmButton = {
             TextButton(
                 onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
-                        viewModel.changeDate(millis)
+                        viewModel.selectedDate(millis)
                     }
-                    viewModel.showDatePicker = false
+                    viewModel.showDateDialog(false)
                 }
             ) {
                 Text(
@@ -220,7 +231,7 @@ fun ShowSelectDate(
         dismissButton = {
             TextButton(
                 onClick = {
-                    viewModel.showDatePicker = false
+                    viewModel.showDateDialog(false)
                 }
             ) {
                 Text(
@@ -239,7 +250,8 @@ fun ShowSelectDate(
 
 @Composable
 fun SelectCategoryComponent(
-    viewModel: AddExpenseViewModel
+    viewModel: AddExpenseViewModel,
+    uiState: AddExpenseUiState
 ) {
     val scrollState = rememberScrollState(0)
 
@@ -253,23 +265,23 @@ fun SelectCategoryComponent(
             fontSize = 16.sp,
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
-            color = Void,
+            color = if(uiState.categoryError != null) ErrorRedDark else Void,
         )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .clip(RoundedCornerShape(18.dp))
-                .background(LightGreen)
+                .background(if(uiState.categoryError != null) ErrorRedLight else LightGreen)
                 .padding(5.dp)
                 .clickable {
-                    viewModel.expandedDropDownMenu = !viewModel.expandedDropDownMenu
+                    viewModel.changeExpandDropDownMenu(!uiState.expandedDropDownMenu)
                 },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = viewModel.textSelectCategory.lowercase().replaceFirstChar { char ->
+                text = if (uiState.selectedCategory.isEmpty()) "Select category" else uiState.selectedCategory.lowercase().replaceFirstChar { char ->
                     char.uppercaseChar()},
                 fontSize = 14.sp,
                 fontFamily = PoppinsFontFamily,
@@ -279,7 +291,7 @@ fun SelectCategoryComponent(
 
             IconButton(
                 onClick = {
-                    viewModel.expandedDropDownMenu = !viewModel.expandedDropDownMenu
+                    viewModel.changeExpandDropDownMenu(!uiState.expandedDropDownMenu)
                 }
             ) {
                 Icon(
@@ -292,9 +304,9 @@ fun SelectCategoryComponent(
         }
         Spacer(modifier = Modifier.height(15.dp))
         DropdownMenu(
-            expanded = viewModel.expandedDropDownMenu,
+            expanded = uiState.expandedDropDownMenu,
             onDismissRequest = {
-                viewModel.expandedDropDownMenu = false
+                viewModel.changeExpandDropDownMenu(false)
             },
             modifier = Modifier
                 .fillMaxWidth(0.8f)
@@ -306,7 +318,7 @@ fun SelectCategoryComponent(
             ) {
             TransactionCategories.entries.forEach { category ->
 
-                if (TransactionCategories.OTHER == category) return@forEach
+                if (TransactionCategories.MORE == category) return@forEach
 
                 DropdownMenuItem(
                     text = {
@@ -321,8 +333,8 @@ fun SelectCategoryComponent(
                         )
                     },
                     onClick = {
-                        viewModel.textSelectCategory = category.name
-                        viewModel.expandedDropDownMenu = false
+                        viewModel.selectCategory(category.name)
+                        viewModel.changeExpandDropDownMenu(false)
                     },
                 )
                 HorizontalDivider(Modifier.background(CaribbeanGreen))
@@ -333,7 +345,8 @@ fun SelectCategoryComponent(
 
 @Composable
 fun SelectAmountComponent(
-    viewModel: AddExpenseViewModel
+    viewModel: AddExpenseViewModel,
+    uiState: AddExpenseUiState
 ) {
     Column(
         modifier = Modifier
@@ -345,24 +358,20 @@ fun SelectAmountComponent(
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
-            color = Void
+            color = if(uiState.amountError != null) ErrorRedDark else Void
         )
 
         TextField(
-            value = viewModel.textSelectAmount,
+            value = uiState.amount,
+            isError = uiState.amountError != null,
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(18.dp)),
             onValueChange = { newValue ->
-                if (!newValue.matches(Regex("^\\d*(\\.\\d{0,2})?$"))) {
-                    return@TextField
-                }
+                val regex = Regex("^\\d*([.,]\\d{0,2})?$")
 
-                // Проверяем максимальное значение
-                val number = newValue.toDoubleOrNull()
-
-                if (number == null || number <= 999_999_999.99) {
-                    viewModel.textSelectAmount = newValue
+                if (newValue.matches(regex)) {
+                    viewModel.onAmountChanged(newValue)
                 }
             },
             singleLine = true,
@@ -374,7 +383,9 @@ fun SelectAmountComponent(
                 unfocusedIndicatorColor = LightGreen,
                 focusedIndicatorColor = LightGreen,
                 focusedTextColor = Void,
-                unfocusedTextColor = Void
+                unfocusedTextColor = Void,
+                errorTextColor = ErrorRedDark,
+                errorContainerColor = ErrorRedLight
             )
         )
     }
@@ -382,7 +393,8 @@ fun SelectAmountComponent(
 
 @Composable
 fun SelectExpenseTitleComponent(
-    viewModel: AddExpenseViewModel
+    viewModel: AddExpenseViewModel,
+    uiState: AddExpenseUiState
 ) {
     Column(
         modifier = Modifier
@@ -394,16 +406,17 @@ fun SelectExpenseTitleComponent(
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
-            color = Void
+            color = if(uiState.titleError != null) ErrorRedDark else Void
         )
 
         TextField(
-            value = viewModel.textSelectTitle,
+            value = uiState.selectTitle,
+            isError = uiState.titleError != null,
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(18.dp)),
             onValueChange = {
-                viewModel.textSelectTitle = it
+                viewModel.titleChanged(it)
             },
             singleLine = true,
             colors = TextFieldDefaults.colors(
@@ -413,7 +426,9 @@ fun SelectExpenseTitleComponent(
                 unfocusedIndicatorColor = LightGreen,
                 focusedIndicatorColor = LightGreen,
                 focusedTextColor = Void,
-                unfocusedTextColor = Void
+                unfocusedTextColor = Void,
+                errorTextColor = ErrorRedDark,
+                errorContainerColor = ErrorRedLight
             )
         )
     }
@@ -421,7 +436,8 @@ fun SelectExpenseTitleComponent(
 
 @Composable
 fun SelectExpenseMessageComponent(
-    viewModel: AddExpenseViewModel
+    viewModel: AddExpenseViewModel,
+    uiState: AddExpenseUiState
 ) {
     Box(
         modifier = Modifier
@@ -429,12 +445,13 @@ fun SelectExpenseMessageComponent(
             .height(90.dp),
     ) {
         TextField(
-            value = viewModel.textSelectMessage,
+            value = uiState.selectMessage,
+            isError = uiState.messageError != null,
             modifier = Modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(22.dp)),
             onValueChange = {
-                viewModel.textSelectMessage = it
+                viewModel.messageChanged(it)
             },
             singleLine = true,
             colors = TextFieldDefaults.colors(
@@ -444,7 +461,9 @@ fun SelectExpenseMessageComponent(
                 unfocusedIndicatorColor = LightGreen,
                 focusedIndicatorColor = LightGreen,
                 focusedTextColor = Void,
-                unfocusedTextColor = Void
+                unfocusedTextColor = Void,
+                errorTextColor = ErrorRedDark,
+                errorContainerColor = ErrorRedLight
             )
         )
         Text(
@@ -452,7 +471,7 @@ fun SelectExpenseMessageComponent(
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
-            color = CaribbeanGreen,
+            color = if(uiState.messageError != null) ErrorRedDark else CaribbeanGreen,
             modifier = Modifier
                 .padding(10.dp)
                 .align(Alignment.TopStart)
@@ -463,5 +482,5 @@ fun SelectExpenseMessageComponent(
 @Preview(showBackground = true)
 @Composable
 fun AddExpensesPreview() {
-    AddExpenseScreen(){}
+//    AddExpenseScreen(){}
 }
