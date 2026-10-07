@@ -5,9 +5,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -24,6 +27,7 @@ import com.example.financemanager.ui.theme.HoneyDew
 fun AppScaffold() {
     val navHostController = rememberNavController()
     val backStackEntry by navHostController.currentBackStackEntryAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
     val items = bottomNavItem()
 
     val currentRoute = currentRoute(backStackEntry)
@@ -37,6 +41,9 @@ fun AppScaffold() {
 
     Scaffold(
         containerColor = CaribbeanGreen,
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        },
         topBar = {
             when(currentRoute) {
                 is RoutesScreen.CategoryDetails -> {
@@ -89,7 +96,10 @@ fun AppScaffold() {
     ) { innerPadding ->
 
         Box(modifier = Modifier.padding(innerPadding)) {
-            AppNavGraph(appNavController = navHostController)
+            AppNavGraph(
+                appNavController = navHostController,
+                snackbarHostState = snackbarHostState
+            )
         }
 
     }

@@ -1,5 +1,6 @@
 package com.example.financemanager.presentation.navigation
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -13,7 +14,8 @@ import com.example.financemanager.presentation.home.HomeScreen
 
 @Composable
 fun AppNavGraph(
-    appNavController: NavHostController
+    appNavController: NavHostController,
+    snackbarHostState: SnackbarHostState
 ) {
     NavHost(navController = appNavController,
             startDestination = RoutesScreen.Home
@@ -31,17 +33,18 @@ fun AppNavGraph(
         }
         composable<RoutesScreen.CategoryDetails> {
             CategoryDetails(
-                onClickAddExpense = {
-                    appNavController.navigate(RoutesScreen.AddExpense)
+                onClickAddExpense = { category ->
+                    appNavController.navigate(RoutesScreen.AddExpense(category))
                 }
             )
         }
 
         composable<RoutesScreen.AddExpense> {
             AddExpenseScreen(
-                back = {
+                onExpenseSaved = {
                     appNavController.popBackStack()
-                }
+                },
+                snackbarHostState = snackbarHostState
             )
         }
 
