@@ -11,6 +11,7 @@ import com.example.financemanager.presentation.addExpenses.AddExpenseScreen
 import com.example.financemanager.presentation.categories.CategoriesScreen
 import com.example.financemanager.presentation.categories.CategoryDetails
 import com.example.financemanager.presentation.home.HomeScreen
+import com.example.financemanager.presentation.transaction.TransactionScreen
 
 @Composable
 fun AppNavGraph(
@@ -41,15 +42,22 @@ fun AppNavGraph(
 
         composable<RoutesScreen.AddExpense> {
             AddExpenseScreen(
-                onExpenseSaved = {
-                    appNavController.popBackStack()
+                onExpenseSaved = { category ->
+                    appNavController.navigate(RoutesScreen.CategoryDetails(category)) {
+                        popUpTo<RoutesScreen.CategoryDetails> {
+                            inclusive = true
+                        }
+                    }
                 },
                 snackbarHostState = snackbarHostState
             )
+
         }
 
         composable<RoutesScreen.Profile> {  }
         composable<RoutesScreen.Analysis>{}
-        composable<RoutesScreen.Transaction>{}
+        composable<RoutesScreen.Transaction>{
+            TransactionScreen()
+        }
     }
 }
