@@ -20,6 +20,7 @@ val LightBlue = Color(0xFF6DB6FE)
 val VividBlue = Color(0xFF3299FF)
 val OceanBlue = Color(0xFF0068FF)
 
-val ErrorRed = Color(0xFFE84C4C)        // основной цвет ошибки — текст, обводка поля, иконка
-val ErrorRedLight = Color(0xFFFCE8E8)   // светлый фон под ошибку (аналог LightGreen/HoneyDew)
-val ErrorRedDark = Color(0xFFB23232)    // тёмный вариант — для текста на светлом фоне, лучше контра
+
+val Red = Color(0xFFE84C4C)        // основной цвет ошибки — текст, обводка поля, иконка
+val RedLight = Color(0xFFFCE8E8)   // светлый фон под ошибку (аналог LightGreen/HoneyDew)
+val RedDark = Color(0xFFB23232)    // тёмный вариант — для текста на светлом фоне, лучше контра
