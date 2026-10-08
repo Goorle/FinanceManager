@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.financemanager.presentation.components.BalanceOverview
-import com.example.financemanager.presentation.components.CardCategory
+import com.example.financemanager.presentation.components.CardWithMessage
 import com.example.financemanager.presentation.home.components.SegmentedComponent
 import com.example.financemanager.ui.theme.HoneyDew
 
@@ -57,7 +57,7 @@ fun HomeScreen(
                             items = transactions,
                             key = {it.id}
                         ) { transaction ->
-                            CardCategory(transaction)
+                            CardWithMessage(transaction)
                         }
                     }
                 }
