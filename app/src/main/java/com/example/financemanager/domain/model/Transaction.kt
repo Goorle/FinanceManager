@@ -9,6 +9,6 @@ data class Transaction(
     val message: String,
     val amount: Double,
     val type: TransactionType,
-    val category: TransactionCategories,
+    val category: Category,
     val date: LocalDate,
     )

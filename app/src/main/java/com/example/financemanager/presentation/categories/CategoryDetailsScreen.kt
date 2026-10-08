@@ -28,22 +28,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.financemanager.domain.model.Category
-import com.example.financemanager.domain.model.Transaction
-import com.example.financemanager.domain.model.TransactionCategories
-import com.example.financemanager.domain.model.TransactionType
 import com.example.financemanager.presentation.categories.components.CardTransaction
 import com.example.financemanager.presentation.categories.viewModels.CategoryDetailsViewModel
-import com.example.financemanager.presentation.components.BalanceComponent
 import com.example.financemanager.presentation.components.BalanceOverview
-import com.example.financemanager.presentation.components.ProgressBarComponent
-import com.example.financemanager.presentation.components.StatisticComponent
 import com.example.financemanager.ui.theme.CaribbeanGreen
 import com.example.financemanager.ui.theme.Cyprus
 import com.example.financemanager.ui.theme.HoneyDew
 import com.example.financemanager.ui.theme.PoppinsFontFamily
-import com.example.financemanager.ui.theme.Void
-import java.time.LocalDate
-import java.util.UUID
 
 @Composable
 fun CategoryDetails(

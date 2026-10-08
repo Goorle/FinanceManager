@@ -27,8 +27,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.financemanager.R
+import com.example.financemanager.domain.model.Category
 import com.example.financemanager.domain.model.Transaction
-import com.example.financemanager.domain.model.TransactionCategories
 import com.example.financemanager.domain.model.TransactionType
 import com.example.financemanager.ui.theme.CaribbeanGreen
 import com.example.financemanager.ui.theme.HoneyDew
@@ -99,7 +99,7 @@ fun CardTransaction(transaction: Transaction) {
             ) {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = if (transaction.type == TransactionType.EXPENSE) "-$${transaction.amount}" else "+$${transaction.amount}",
+                    text = if (transaction.type == TransactionType.EXPENSE) "-${transaction.amount}₽" else "+${transaction.amount}₽",
                     fontFamily = PoppinsFontFamily,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -110,39 +110,8 @@ fun CardTransaction(transaction: Transaction) {
     }
 }
 
-fun getIconIdFromCategory(category: TransactionCategories): Int {
-    return when(category) {
-        TransactionCategories.FOOD -> {
-            R.drawable.food_vector
-        }
-        TransactionCategories.TRANSPORT -> {
-            R.drawable.transport_vector
-        }
-        TransactionCategories.MEDICINE -> {
-            R.drawable.medicine_vector
-        }
-        TransactionCategories.GROCERIES -> {
-            R.drawable.products_vector
-        }
-        TransactionCategories.RENT -> {
-            R.drawable.rent_vector
-        }
-        TransactionCategories.GIFTS ->{
-            R.drawable.presents_vector
-        }
-        TransactionCategories.SAVINGS -> {
-            R.drawable.savings_vector
-        }
-        TransactionCategories.ENTERTAINMENT -> {
-            R.drawable.entertainment_vector
-        }
-        TransactionCategories.SALARY -> {
-            R.drawable.salary_vector
-        }
-        TransactionCategories.MORE -> {
-            R.drawable.plus_vector
-        }
-    }
+fun getIconIdFromCategory(category: Category): Int {
+    return category.icon
 }
 
 @Preview(showBackground = true)
@@ -154,7 +123,7 @@ fun CardPreview() {
         message = "TEST MESSAGE",
         amount = 120.4,
         type = TransactionType.EXPENSE,
-        category = TransactionCategories.ENTERTAINMENT,
+        category = Category.ENTERTAINMENT,
         date = LocalDate.now()
     )
     CardTransaction(transaction)

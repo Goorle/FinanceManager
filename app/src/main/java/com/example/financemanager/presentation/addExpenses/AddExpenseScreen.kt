@@ -6,14 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,10 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -46,17 +43,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.financemanager.R
-import com.example.financemanager.domain.model.TransactionCategories
+import com.example.financemanager.domain.model.Category
 import com.example.financemanager.ui.theme.CaribbeanGreen
-import com.example.financemanager.ui.theme.ErrorRedDark
-import com.example.financemanager.ui.theme.ErrorRedLight
-import com.example.financemanager.ui.theme.FenceGreen
+import com.example.financemanager.ui.theme.RedDark
+import com.example.financemanager.ui.theme.RedLight
 import com.example.financemanager.ui.theme.HoneyDew
 import com.example.financemanager.ui.theme.LightGreen
 import com.example.financemanager.ui.theme.PoppinsFontFamily
@@ -68,7 +63,7 @@ import java.time.format.DateTimeFormatter
 fun AddExpenseScreen(
     viewModel: AddExpenseViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState,
-    onExpenseSaved: () -> Unit
+    onExpenseSaved: (Category) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -78,7 +73,7 @@ fun AddExpenseScreen(
         viewModel.events.collect { event ->
             when(event){
                 is TransactionEvent.Error -> snackbarHostState.showSnackbar(event.message)
-                TransactionEvent.SavedSuccessfully -> onExpenseSaved()
+                TransactionEvent.SavedSuccessfully -> onExpenseSaved(Category.valueOf(uiState.selectedCategory))
             }
 
         }
@@ -148,7 +143,7 @@ fun SelectDateComponent(
         modifier = Modifier
             .fillMaxWidth(0.8f)
             .height(75.dp)
-            .clickable{
+            .clickable {
                 viewModel.showDateDialog(true)
             },
     ) {
@@ -253,91 +248,26 @@ fun SelectCategoryComponent(
     viewModel: AddExpenseViewModel,
     uiState: AddExpenseUiState
 ) {
-    val scrollState = rememberScrollState(0)
-
     Column(
         modifier = Modifier
             .fillMaxWidth(0.8f)
-            .height(75.dp),
     ) {
         Text(
             text = "Category",
             fontSize = 16.sp,
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
-            color = if(uiState.categoryError != null) ErrorRedDark else Void,
+            color = if (uiState.categoryError != null) RedDark else Void,
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .clip(RoundedCornerShape(18.dp))
-                .background(if(uiState.categoryError != null) ErrorRedLight else LightGreen)
-                .padding(5.dp)
-                .clickable {
-                    viewModel.changeExpandDropDownMenu(!uiState.expandedDropDownMenu)
-                },
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(
-                text = if (uiState.selectedCategory.isEmpty()) "Select category" else uiState.selectedCategory.lowercase().replaceFirstChar { char ->
-                    char.uppercaseChar()},
-                fontSize = 14.sp,
-                fontFamily = PoppinsFontFamily,
-                fontWeight = FontWeight.Normal,
-                color = FenceGreen
-            )
-
-            IconButton(
-                onClick = {
-                    viewModel.changeExpandDropDownMenu(!uiState.expandedDropDownMenu)
+            items(Category.entries) { category ->
+                CardCategory(category, Category.valueOf(uiState.selectedCategory)) {
+                    viewModel.selectCategory(category.name)
                 }
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.confirm_vector),
-                    tint = CaribbeanGreen,
-                    contentDescription = "Category Choose",
-                    modifier = Modifier.size(16.dp)
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(15.dp))
-        DropdownMenu(
-            expanded = uiState.expandedDropDownMenu,
-            onDismissRequest = {
-                viewModel.changeExpandDropDownMenu(false)
-            },
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .heightIn(max = 175.dp),
-            shape = RoundedCornerShape(18.dp),
-            scrollState = scrollState,
-            containerColor = LightGreen,
-            offset = DpOffset(0.dp, 5.dp)
-            ) {
-            TransactionCategories.entries.forEach { category ->
-
-                if (TransactionCategories.MORE == category) return@forEach
-
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = category.name.lowercase().replaceFirstChar { char ->
-                                char.uppercaseChar()
-                            },
-                            fontSize = 14.sp,
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Normal,
-                            color = Void
-                        )
-                    },
-                    onClick = {
-                        viewModel.selectCategory(category.name)
-                        viewModel.changeExpandDropDownMenu(false)
-                    },
-                )
-                HorizontalDivider(Modifier.background(CaribbeanGreen))
             }
         }
     }
@@ -358,11 +288,18 @@ fun SelectAmountComponent(
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
-            color = if(uiState.amountError != null) ErrorRedDark else Void
+            color = if(uiState.amountError != null) RedDark else Void
         )
 
         TextField(
             value = uiState.amount,
+            suffix = {
+                Text(
+                    text = "₽",
+                    fontFamily = PoppinsFontFamily,
+                    color = Void
+                )
+            },
             isError = uiState.amountError != null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -384,8 +321,9 @@ fun SelectAmountComponent(
                 focusedIndicatorColor = LightGreen,
                 focusedTextColor = Void,
                 unfocusedTextColor = Void,
-                errorTextColor = ErrorRedDark,
-                errorContainerColor = ErrorRedLight
+                errorTextColor = RedDark,
+                errorContainerColor = RedLight,
+                errorIndicatorColor = RedLight,
             )
         )
     }
@@ -406,7 +344,7 @@ fun SelectExpenseTitleComponent(
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
-            color = if(uiState.titleError != null) ErrorRedDark else Void
+            color = if(uiState.titleError != null) RedDark else Void
         )
 
         TextField(
@@ -427,8 +365,9 @@ fun SelectExpenseTitleComponent(
                 focusedIndicatorColor = LightGreen,
                 focusedTextColor = Void,
                 unfocusedTextColor = Void,
-                errorTextColor = ErrorRedDark,
-                errorContainerColor = ErrorRedLight
+                errorTextColor = RedDark,
+                errorContainerColor = RedLight,
+                errorIndicatorColor = RedLight,
             )
         )
     }
@@ -462,8 +401,9 @@ fun SelectExpenseMessageComponent(
                 focusedIndicatorColor = LightGreen,
                 focusedTextColor = Void,
                 unfocusedTextColor = Void,
-                errorTextColor = ErrorRedDark,
-                errorContainerColor = ErrorRedLight
+                errorTextColor = RedDark,
+                errorContainerColor = RedLight,
+                errorIndicatorColor = RedLight,
             )
         )
         Text(
@@ -471,7 +411,7 @@ fun SelectExpenseMessageComponent(
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
-            color = if(uiState.messageError != null) ErrorRedDark else CaribbeanGreen,
+            color = if(uiState.messageError != null) RedDark else CaribbeanGreen,
             modifier = Modifier
                 .padding(10.dp)
                 .align(Alignment.TopStart)

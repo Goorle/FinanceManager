@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.example.financemanager.domain.model.Category
 import com.example.financemanager.domain.model.Transaction
-import com.example.financemanager.domain.model.TransactionCategories
 import com.example.financemanager.domain.model.TransactionType
 import com.example.financemanager.domain.model.repositoiry.TransactionRepository
 import com.example.financemanager.presentation.navigation.RoutesScreen
@@ -128,7 +128,7 @@ class AddExpenseViewModel @Inject constructor(
                         title = state.selectTitle,
                         message = state.selectMessage,
                         amount = state.amount.toDouble(),
-                        category = TransactionCategories.valueOf(state.selectedCategory),
+                        category = Category.valueOf(state.selectedCategory),
                         date = state.selectedDate,
                         type = getType(state.selectedCategory)
                     )
@@ -152,7 +152,7 @@ class AddExpenseViewModel @Inject constructor(
 
     fun getType(category: String): TransactionType  {
         return when(category) {
-            TransactionCategories.SALARY.name ->
+            Category.SALARY.name ->
                 TransactionType.INCOME
             else -> {
                 TransactionType.EXPENSE

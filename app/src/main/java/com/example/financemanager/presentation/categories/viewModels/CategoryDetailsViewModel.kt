@@ -20,7 +20,7 @@ class CategoryDetailsViewModel @Inject constructor(
 ): ViewModel() {
     val category = savedStateHandle.toRoute<RoutesScreen.CategoryDetails>().category
 
-    val transaction = repository.getTransactionByCategory(category.name)
+    val transaction = repository.getTransactionByCategory(category)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
