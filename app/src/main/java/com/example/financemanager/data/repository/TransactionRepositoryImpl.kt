@@ -2,8 +2,8 @@ package com.example.financemanager.data.repository
 
 import com.example.financemanager.data.local.dao.TransactionDao
 import com.example.financemanager.data.local.entity.TransactionEntity
+import com.example.financemanager.domain.model.Category
 import com.example.financemanager.domain.model.Transaction
-import com.example.financemanager.domain.model.TransactionCategories
 import com.example.financemanager.domain.model.TransactionType
 import com.example.financemanager.domain.model.repositoiry.TransactionRepository
 import kotlinx.coroutines.flow.Flow
@@ -22,8 +22,14 @@ class TransactionRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getTransactionByCategory(category: String): Flow<List<Transaction>> {
-        return dao.getTransactionByCategory(category).map{entities ->
+    override fun getTransactionByCategory(category: Category): Flow<List<Transaction>> {
+        return dao.getTransactionByCategory(category.name).map{entities ->
+            entities.map { entity -> mapEntityToDomain(entity) }
+        }
+    }
+
+    override fun getTransactionByType(type: TransactionType): Flow<List<Transaction>> {
+        return dao.getTransactionByType(type.name).map { entities ->
             entities.map { entity -> mapEntityToDomain(entity) }
         }
     }
@@ -53,7 +59,7 @@ class TransactionRepositoryImpl @Inject constructor(
             message = entity.message,
             amount = entity.amount,
             type = TransactionType.valueOf(entity.type),
-            category = TransactionCategories.valueOf(entity.category),
+            category = Category.valueOf(entity.category),
             date = localDate,
         )
     }
