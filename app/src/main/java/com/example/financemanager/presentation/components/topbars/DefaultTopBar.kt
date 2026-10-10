@@ -60,13 +60,13 @@ fun DefaultTopBar(title: String,
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = HoneyDew
                 ),
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(36.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.notification_vector),
                     contentDescription = "Notification",
                     modifier = Modifier
-                        .size(32.dp),
+                        .size(24.dp),
                     tint = Void
                 )
             }
