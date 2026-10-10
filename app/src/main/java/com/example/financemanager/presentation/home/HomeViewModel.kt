@@ -2,14 +2,13 @@ package com.example.financemanager.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.financemanager.domain.model.Category
 import com.example.financemanager.domain.model.Transaction
 import com.example.financemanager.domain.model.repositoiry.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,4 +19,7 @@ class HomeViewModel @Inject constructor(
         .stateIn(viewModelScope,
         SharingStarted.WhileSubscribed(5000),
             emptyList())
+
+
+    fun printDate(currentDate: LocalDate, previousDate: LocalDate?): Boolean = currentDate != previousDate
 }
