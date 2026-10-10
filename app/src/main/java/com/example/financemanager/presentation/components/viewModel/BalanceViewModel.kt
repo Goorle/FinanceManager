@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import java.text.NumberFormat
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,4 +45,13 @@ class BalanceViewModel @Inject constructor(
         SharingStarted.WhileSubscribed(5000),
         0.0
     )
+
+    fun formatCurrency(amount: Double): String {
+        val formatter = NumberFormat.getNumberInstance(Locale.FRANCE).apply {
+            minimumFractionDigits = 2
+            maximumFractionDigits = 2
+        }
+
+        return "${formatter.format(amount)} ₽"
+    }
 }

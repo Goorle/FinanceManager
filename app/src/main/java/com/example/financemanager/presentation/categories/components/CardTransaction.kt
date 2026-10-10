@@ -26,7 +26,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.financemanager.R
 import com.example.financemanager.domain.model.Category
 import com.example.financemanager.domain.model.Transaction
 import com.example.financemanager.domain.model.TransactionType
@@ -36,11 +35,17 @@ import com.example.financemanager.ui.theme.OceanBlue
 import com.example.financemanager.ui.theme.PoppinsFontFamily
 import com.example.financemanager.ui.theme.VividBlue
 import com.example.financemanager.ui.theme.Void
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ofPattern
+import java.util.Locale
 
 @Composable
 fun CardTransaction(transaction: Transaction) {
+    val formatter = NumberFormat.getNumberInstance(Locale.FRANCE).apply {
+        minimumFractionDigits = 2
+        maximumFractionDigits = 2
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -99,7 +104,7 @@ fun CardTransaction(transaction: Transaction) {
             ) {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = if (transaction.type == TransactionType.EXPENSE) "-${transaction.amount}₽" else "+${transaction.amount}₽",
+                    text = if (transaction.type == TransactionType.EXPENSE)  "-${formatter.format(transaction.amount)}₽"  else "+${formatter.format(transaction.amount)}₽",
                     fontFamily = PoppinsFontFamily,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,

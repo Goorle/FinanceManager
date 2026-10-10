@@ -9,15 +9,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,17 +33,23 @@ import com.example.financemanager.domain.model.Category
 import com.example.financemanager.domain.model.Transaction
 import com.example.financemanager.domain.model.TransactionType
 import com.example.financemanager.ui.theme.CaribbeanGreen
-import com.example.financemanager.ui.theme.FenceGreen
 import com.example.financemanager.ui.theme.HoneyDew
 import com.example.financemanager.ui.theme.OceanBlue
 import com.example.financemanager.ui.theme.PoppinsFontFamily
 import com.example.financemanager.ui.theme.VividBlue
 import com.example.financemanager.ui.theme.Void
+import java.text.NumberFormat
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter.ofPattern
+import java.util.Locale
 
 @Composable
-fun CardWithMessage(transaction: Transaction) {
+fun CardWithMessage(
+    transaction: Transaction
+) {
+    val formatter = NumberFormat.getNumberInstance(Locale.FRANCE).apply {
+        minimumFractionDigits = 2
+        maximumFractionDigits = 2
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -58,7 +63,7 @@ fun CardWithMessage(transaction: Transaction) {
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Absolute.SpaceEvenly
+            horizontalArrangement = Arrangement.Absolute.SpaceBetween
         ) {
             Box(
                 modifier = Modifier
@@ -77,7 +82,8 @@ fun CardWithMessage(transaction: Transaction) {
 
             Column(
                 modifier = Modifier
-                    .widthIn(100.dp)
+                    .weight(2f)
+                    .padding(horizontal = 7.dp)
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
@@ -85,7 +91,7 @@ fun CardWithMessage(transaction: Transaction) {
                     modifier = Modifier.width(100.dp),
                     text = transaction.title,
                     fontFamily = PoppinsFontFamily,
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = Void,
                     maxLines = 1,
@@ -94,8 +100,7 @@ fun CardWithMessage(transaction: Transaction) {
 
                 Text(
                     modifier = Modifier.width(100.dp),
-                    text = transaction.date.format(ofPattern("d MMMM")
-                    ),
+                    text = transaction.message,
                     fontFamily = PoppinsFontFamily,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
@@ -105,34 +110,13 @@ fun CardWithMessage(transaction: Transaction) {
                 )
             }
 
-            VerticalDivider(
-                thickness = 2.dp,
-                color = CaribbeanGreen
-            )
-
             Text(
-                modifier = Modifier.width(80.dp),
-                text = transaction.message,
+                modifier = Modifier.weight(2f),
+                textAlign = TextAlign.End,
+                text = if (transaction.type == TransactionType.EXPENSE) "-${formatter.format(transaction.amount)}₽"
+                else "+${formatter.format(transaction.amount)}₽",
                 fontFamily = PoppinsFontFamily,
-                fontSize = 12.sp,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Normal,
-                color = FenceGreen,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            VerticalDivider(
-                thickness = 2.dp,
-                color = CaribbeanGreen
-            )
-
-            Text(
-                modifier = Modifier.width(100.dp),
-                textAlign = TextAlign.Center,
-                text = if (transaction.type == TransactionType.EXPENSE) "-${transaction.amount}₽" else "+${transaction.amount}₽",
-                fontFamily = PoppinsFontFamily,
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 color = if (transaction.type == TransactionType.EXPENSE) OceanBlue else CaribbeanGreen
             )

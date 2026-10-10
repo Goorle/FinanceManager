@@ -1,6 +1,7 @@
 package com.example.financemanager.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -17,18 +18,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.financemanager.R
 import com.example.financemanager.domain.model.TransactionType
 import com.example.financemanager.presentation.components.viewModel.BalanceViewModel
 import com.example.financemanager.ui.theme.HoneyDew
 import com.example.financemanager.ui.theme.OceanBlue
 import com.example.financemanager.ui.theme.PoppinsFontFamily
+import com.example.financemanager.ui.theme.Red
 import com.example.financemanager.ui.theme.Void
 
 
@@ -36,38 +40,51 @@ import com.example.financemanager.ui.theme.Void
 fun BalanceComponent(
     viewModel: BalanceViewModel = hiltViewModel()
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min),
-        horizontalArrangement = Arrangement.SpaceAround
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
     ) {
-        Component(
-            transactionType = TransactionType.INCOME,
-            viewModel
-        )
-        VerticalDivider(
-            thickness = 1.dp,
-            color = HoneyDew,
-            modifier = Modifier.padding(vertical = 5.dp)
-        )
-        Component(
-            transactionType = TransactionType.EXPENSE,
-            viewModel
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
 
-        )
+            Component(
+                modifier = Modifier.weight(1f),
+                transactionType = TransactionType.INCOME,
+                balanceViewModel = viewModel
+            )
+            VerticalDivider(
+                thickness = 1.dp,
+                color = HoneyDew,
+                modifier = Modifier.padding(vertical = 5.dp)
+            )
+            Component(
+                modifier = Modifier.weight(1f),
+                transactionType = TransactionType.EXPENSE,
+                balanceViewModel = viewModel
+
+            )
+        }
     }
 }
 
 @Composable
 fun Component(
+    modifier: Modifier,
     transactionType: TransactionType,
     balanceViewModel: BalanceViewModel = hiltViewModel()
     ) {
     val totalExpense by balanceViewModel.totalExpense.collectAsStateWithLifecycle()
     val totalBalance by balanceViewModel.totalBalance.collectAsStateWithLifecycle()
-    Column {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(
+            modifier = Modifier,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -89,25 +106,26 @@ fun Component(
             Text(
                 text = when(transactionType) {
                     TransactionType.INCOME -> {
-                        "Total Balance"
+                        stringResource(R.string.total_balance)
                     }
                     TransactionType.EXPENSE -> {
-                        "Total expense"
+                        stringResource(R.string.total_expense)
                     }
                 },
                 fontFamily = PoppinsFontFamily,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Normal,
-                color = Void
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Void,
+                textAlign = TextAlign.Start
             )
         }
         Text(
             text = when(transactionType) {
                 TransactionType.INCOME -> {
-                    "${"%.2f".format(totalBalance)} ₽"
+                    balanceViewModel.formatCurrency(totalBalance)
                 }
                 TransactionType.EXPENSE -> {
-                    "${"%.2f".format(totalExpense)} ₽"
+                   "-" + balanceViewModel.formatCurrency(totalExpense)
                 }
             },
             fontFamily = PoppinsFontFamily,
@@ -120,7 +138,9 @@ fun Component(
                 TransactionType.EXPENSE -> {
                     OceanBlue
                 }
-            }
+            },
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
