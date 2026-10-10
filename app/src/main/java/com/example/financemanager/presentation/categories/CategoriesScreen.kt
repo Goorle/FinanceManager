@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -18,25 +17,19 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.financemanager.R
 import com.example.financemanager.domain.model.Category
 import com.example.financemanager.presentation.categories.viewModels.CategoriesScreenViewModel
-import com.example.financemanager.presentation.components.BalanceComponent
 import com.example.financemanager.presentation.components.BalanceOverview
-import com.example.financemanager.presentation.components.ProgressBarComponent
-import com.example.financemanager.presentation.components.StatisticComponent
 import com.example.financemanager.ui.theme.HoneyDew
 import com.example.financemanager.ui.theme.LightBlue
 import com.example.financemanager.ui.theme.PoppinsFontFamily
@@ -93,7 +86,7 @@ fun CategoriesScreen(
                             )
                         }
                         Text(
-                            text = category.displayName,
+                            text = stringResource(category.displayName),
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp,

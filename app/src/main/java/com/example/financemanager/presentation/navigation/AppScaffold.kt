@@ -8,14 +8,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.financemanager.R
 import com.example.financemanager.presentation.components.BottomBar
 import com.example.financemanager.presentation.components.topbars.TopBarHome
 import com.example.financemanager.presentation.components.bottomNavItem
@@ -48,16 +47,24 @@ fun AppScaffold() {
             when(currentRoute) {
                 is RoutesScreen.CategoryDetails -> {
                     DefaultTopBar(
-                        title = currentRoute.category.displayName,
+                        title = stringResource(currentRoute.category.displayName),
                         onClickBack = {
                             navHostController.popBackStack()
                         }
                     ) { }
                 }
                 RoutesScreen.Home -> TopBarHome()
+                is RoutesScreen.AddExpense -> {
+                    DefaultTopBar(
+                        title = stringResource(currentRoute.titleRes()),
+                        onClickBack = {
+                            navHostController.popBackStack()
+                        }
+                    ) { }
+                }
                 null -> {
                     DefaultTopBar(
-                        title = "Finance Manager",
+                        title = stringResource(R.string.app_name),
                         onClickBack = {
                             navHostController.popBackStack()
                         },
@@ -65,7 +72,7 @@ fun AppScaffold() {
                 }
                 else -> {
                     DefaultTopBar(
-                        title = currentRoute.route,
+                        title = stringResource(currentRoute.titleRes()),
                         onClickBack = {
                             navHostController.popBackStack()
                         }

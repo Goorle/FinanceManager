@@ -15,7 +15,6 @@ private val simpleRoutes: List<RoutesScreen> = listOf(
     RoutesScreen.Profile
 )
 
-@Composable
 fun currentRoute(backStackEntry: NavBackStackEntry?): RoutesScreen? {
     val destination = backStackEntry?.destination ?: return null
 

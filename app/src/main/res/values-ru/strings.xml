@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Финансовый менеджер</string>
+    <string name="title_home">Привет, с возвращением!</string>
+    <string name="have_nice_day">Хорошего дня</string>
+    <string name="total_balance">Баланс</string>
+    <string name="total_expense">Расход</string>
+    <string name="your_expenses">ваших расходов</string>
+    <string name="periiod_day">День</string>
+    <string name="period_week">Неделя</string>
+    <string name="period_month">Месяц</string>
+    <string name="home">Главная</string>
+    <string name="title_categories">Категории</string>
+    <string name="title_add_expense">Добавить расход</string>
+    <string name="title_analysis">Анализ</string>
+    <string name="title_transaction">Транзакции</string>
+    <string name="title_profile">Профиль</string>
+    <string name="category">Категория</string>
+    <string name="total_income">Доход</string>
+    <string name="display_restaurant">Ресторан</string>
+    <string name="display_transport">Транспорт</string>
+    <string name="display_medicine">Медицина</string>
+    <string name="display_groceries">Продукты</string>
+    <string name="display_rent">Аренда</string>
+    <string name="display_gifts">Подарки</string>
+    <string name="display_savings">Накопления</string>
+    <string name="display_entertainment">Развлечения</string>
+    <string name="display_salary">Зарплата</string>
+    <string name="display_more">Ещё</string>
+    <string name="date">Дата</string>
+    <string name="amount">Сумма</string>
+    <string name="enter_message">Введите сообщение</string>
+    <string name="cancel">Отмена</string>
+    <string name="title_expense">Заголовок</string>
+    <string name="save_button">Сохранить</string>
+
+</resources>

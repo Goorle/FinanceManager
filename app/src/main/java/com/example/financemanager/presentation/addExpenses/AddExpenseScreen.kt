@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -117,7 +118,7 @@ fun AddExpenseScreen(
                     )
                 ) {
                     Text(
-                        text = "Save",
+                        text = stringResource(R.string.save_button),
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp,
@@ -148,7 +149,7 @@ fun SelectDateComponent(
             },
     ) {
         Text(
-            text = "Date",
+            text = stringResource(R.string.date),
             fontSize = 16.sp,
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
@@ -230,7 +231,7 @@ fun ShowSelectDate(
                 }
             ) {
                 Text(
-                    text = "Cancel",
+                    text = stringResource(R.string.cancel),
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
@@ -253,7 +254,7 @@ fun SelectCategoryComponent(
             .fillMaxWidth(0.8f)
     ) {
         Text(
-            text = "Category",
+            text = stringResource(R.string.category),
             fontSize = 16.sp,
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
@@ -284,7 +285,7 @@ fun SelectAmountComponent(
             .height(75.dp),
     ) {
         Text(
-            text = "Amount",
+            text = stringResource(R.string.amount),
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
@@ -305,7 +306,7 @@ fun SelectAmountComponent(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(18.dp)),
             onValueChange = { newValue ->
-                val regex = Regex("^\\d*([.,]\\d{0,2})?$")
+                val regex = Regex("^\\d{0,9}([.,]\\d{0,2})?$")
 
                 if (newValue.matches(regex)) {
                     viewModel.onAmountChanged(newValue)
@@ -340,7 +341,7 @@ fun SelectExpenseTitleComponent(
             .height(75.dp),
     ) {
         Text(
-            text = "Expense title",
+            text = stringResource( R.string.title_expense),
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
@@ -407,7 +408,7 @@ fun SelectExpenseMessageComponent(
             )
         )
         Text(
-            text = "Enter Message",
+            text = stringResource(R.string.enter_message),
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,

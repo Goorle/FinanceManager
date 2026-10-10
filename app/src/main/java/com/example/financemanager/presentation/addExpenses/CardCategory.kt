@@ -1,13 +1,9 @@
 package com.example.financemanager.presentation.addExpenses
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -17,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,9 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.example.financemanager.domain.model.Category
 import com.example.financemanager.ui.theme.CaribbeanGreen
 import com.example.financemanager.ui.theme.HoneyDew
-import com.example.financemanager.ui.theme.LightBlue
 import com.example.financemanager.ui.theme.LightGreen
-import com.example.financemanager.ui.theme.OceanBlue
 import com.example.financemanager.ui.theme.PoppinsFontFamily
 import com.example.financemanager.ui.theme.Void
 
@@ -34,6 +29,7 @@ import com.example.financemanager.ui.theme.Void
 fun CardCategory(category: Category,
                  chooseCategory: Category,
                  onClickCategory: () -> Unit) {
+
     Card(
         shape = RoundedCornerShape(18.dp),
         modifier = Modifier
@@ -56,7 +52,7 @@ fun CardCategory(category: Category,
             )
 
             Text(
-                text = category.displayName,
+                text = stringResource(category.displayName),
                 fontFamily = PoppinsFontFamily,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,

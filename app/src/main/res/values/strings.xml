@@ -1,3 +1,35 @@
 <resources>
     <string name="app_name">Finance Manager</string>
+    <string name="title_home">Hi, Welcome Back</string>
+    <string name="have_nice_day">Have a nice day</string>
+    <string name="total_balance">Balance</string>
+    <string name="total_expense">Expense</string>
+    <string name="your_expenses">of your expenses</string>
+    <string name="periiod_day">Daily</string>
+    <string name="period_week">Weekly</string>
+    <string name="period_month">Monthly</string>
+    <string name="home">Home</string>
+    <string name="title_categories">Categories</string>
+    <string name="title_add_expense">Add Expense</string>
+    <string name="title_analysis">Analysis</string>
+    <string name="title_transaction">Transaction</string>
+    <string name="title_profile">Profile</string>
+    <string name="category">Category</string>
+    <string name="total_income">Income</string>
+    <string name="display_restaurant">Restaurant</string>
+    <string name="display_transport">Transport</string>
+    <string name="display_medicine">Medicine</string>
+    <string name="display_groceries">Groceries</string>
+    <string name="display_rent">Rent</string>
+    <string name="display_gifts">Gifts</string>
+    <string name="display_savings">Savings</string>
+    <string name="display_entertainment">Entertainment</string>
+    <string name="display_salary">Salary</string>
+    <string name="display_more">More</string>
+    <string name="date">Date</string>
+    <string name="amount">Amount</string>
+    <string name="enter_message">Enter Message</string>
+    <string name="cancel">Cancel</string>
+    <string name="title_expense">Expense title</string>
+    <string name="save_button">Save</string>
 </resources>

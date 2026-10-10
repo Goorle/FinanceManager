@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,6 +40,8 @@ import com.example.financemanager.ui.theme.HoneyDew
 import com.example.financemanager.ui.theme.OceanBlue
 import com.example.financemanager.ui.theme.PoppinsFontFamily
 import com.example.financemanager.ui.theme.Void
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter.ofPattern
 
 @Composable
 fun TransactionScreen(
@@ -46,6 +49,10 @@ fun TransactionScreen(
 ) {
     val transactions by viewModel.transaction.collectAsStateWithLifecycle()
     val selectedType by viewModel.selectedType.collectAsStateWithLifecycle()
+    val totalExpense by viewModel.totalExpense.collectAsStateWithLifecycle()
+    val totalIncome  by viewModel.totalIncome.collectAsStateWithLifecycle()
+    val totalBalance by viewModel.totalBalance.collectAsStateWithLifecycle()
+
 
     Column(
         modifier = Modifier
@@ -55,9 +62,14 @@ fun TransactionScreen(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth(0.8f)
+                .fillMaxWidth(0.9f)
         ) {
-            TotalBalanceComponent()
+            TotalBalanceComponent(
+                totalBalanceText = viewModel.formatCurrency(totalBalance),
+                onClick = {
+                    viewModel.selectType(null)
+                }
+            )
             Spacer(Modifier.height(15.dp))
             Row(
                 modifier = Modifier
@@ -68,12 +80,9 @@ fun TransactionScreen(
                     modifier = Modifier.weight(1f),
                     type = TransactionType.INCOME,
                     selectType = selectedType,
+                    balanceText = viewModel.formatCurrency(totalIncome),
                     onClick = {
-                        if (selectedType != null && selectedType == TransactionType.INCOME) {
-                            viewModel.selectedType(null)
-                        } else {
-                            viewModel.selectedType(TransactionType.INCOME)
-                        }
+                        viewModel.selectType(TransactionType.INCOME)
                     }
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -82,12 +91,9 @@ fun TransactionScreen(
                     modifier = Modifier.weight(1f),
                     type = TransactionType.EXPENSE,
                     selectType = selectedType,
+                    balanceText = viewModel.formatCurrency(totalExpense),
                     onClick = {
-                        if (selectedType != null && selectedType == TransactionType.EXPENSE) {
-                            viewModel.selectedType(null)
-                        } else {
-                            viewModel.selectedType(TransactionType.EXPENSE)
-                        }
+                        viewModel.selectType(TransactionType.EXPENSE)
                     }
                 )
             }
@@ -102,9 +108,18 @@ fun TransactionScreen(
             LazyColumn(
                 modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp),
                 verticalArrangement = Arrangement.spacedBy(30.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.Start
             ) {
-                items(transactions) { transaction ->
+                itemsIndexed(transactions) {index, transaction ->
+                    val currentDate = transaction.date
+                    val previousDate = transactions.getOrNull(index - 1)?.date
+
+                    if (viewModel.printDate(currentDate, previousDate)) {
+                        Spacer(Modifier.height(20.dp))
+                        MonthHeaderTransaction(currentDate)
+                        Spacer(Modifier.height(15.dp))
+                    }
+
                     CardWithMessage(transaction)
                 }
             }
@@ -113,18 +128,49 @@ fun TransactionScreen(
 }
 
 @Composable
-fun TotalBalanceComponent() {
+fun MonthHeaderTransaction(
+    date: LocalDate
+) {
+    val localDate = LocalDate.now()
+    val text = when (date) {
+        localDate -> {
+            "Сегодня"
+        }
+        localDate.minusDays(1) -> {
+            "Вчера"
+        }
+        else -> {
+            date.format(ofPattern("d MMMM yyyy"))
+        }
+    }
+    Text(
+        text = text,
+        fontFamily = PoppinsFontFamily,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Medium,
+        color = Void
+    )
+}
+
+@Composable
+fun TotalBalanceComponent(
+    onClick: () -> Unit,
+    totalBalanceText: String,
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .height(75.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(HoneyDew),
+            .background(HoneyDew)
+            .clickable{
+                onClick()
+            },
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Total Balance",
+            text = stringResource(R.string.total_balance),
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
@@ -132,7 +178,7 @@ fun TotalBalanceComponent() {
         )
 
         Text(
-            text = "21000.00₽",
+            text = totalBalanceText,
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 30.sp,
@@ -146,6 +192,7 @@ fun TransactionTypeComponent(
     modifier: Modifier,
     type: TransactionType,
     selectType: TransactionType?,
+    balanceText: String,
     onClick: () -> Unit
 ) {
     var backgroundColor = HoneyDew
@@ -153,6 +200,7 @@ fun TransactionTypeComponent(
     var textAmountColor = if (type == TransactionType.EXPENSE) OceanBlue else Void
     var typeTextColor = Void
     val iconType = if (type == TransactionType.EXPENSE) R.drawable.income else R.drawable.expense_vector
+    val textTitle = if (type == TransactionType.EXPENSE) stringResource(R.string.total_expense) else stringResource(R.string.total_income)
 
     if (selectType != null && selectType == type) {
         backgroundColor = OceanBlue
@@ -164,7 +212,7 @@ fun TransactionTypeComponent(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .height(110.dp)
+            .height(90.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(backgroundColor)
             .clickable{
@@ -179,11 +227,11 @@ fun TransactionTypeComponent(
             ),
             contentDescription = "Income icon",
             tint = iconColor,
-            modifier = Modifier.size(28.dp)
+            modifier = Modifier.size(24.dp)
         )
 
         Text(
-            text = "Expense",
+            text = textTitle,
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 18.sp,
@@ -191,10 +239,10 @@ fun TransactionTypeComponent(
         )
 
         Text(
-            text = "21000.00₽",
+            text = balanceText,
             fontFamily = PoppinsFontFamily,
             fontWeight = FontWeight.Medium,
-            fontSize = 24.sp,
+            fontSize = 14.sp,
             color = textAmountColor
         )
     }

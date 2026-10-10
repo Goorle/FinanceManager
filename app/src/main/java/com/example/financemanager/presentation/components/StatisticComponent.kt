@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,7 +46,7 @@ fun StatisticComponent(
             Spacer(Modifier.size(5.dp))
 
             Text(
-                text = "${"%.0f".format(percentExpense)} % of your expenses",
+                text = "${"%.0f".format(percentExpense)} % ${stringResource(R.string.your_expenses)}",
                 fontFamily = PoppinsFontFamily,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Normal,

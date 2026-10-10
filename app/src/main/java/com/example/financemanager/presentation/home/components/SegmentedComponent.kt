@@ -1,11 +1,8 @@
 package com.example.financemanager.presentation.home.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -18,13 +15,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.financemanager.R
 import com.example.financemanager.ui.theme.CaribbeanGreen
-import com.example.financemanager.ui.theme.Cyprus
 import com.example.financemanager.ui.theme.LightGreen
 import com.example.financemanager.ui.theme.PoppinsFontFamily
 import com.example.financemanager.ui.theme.Void
@@ -32,7 +29,10 @@ import com.example.financemanager.ui.theme.Void
 @Composable
 fun SegmentedComponent() {
     var selectedIndex by remember{ mutableStateOf(0) }
-    val options = listOf("Daily", "Weekly", "Monthly")
+    val options = listOf(
+        stringResource(R.string.periiod_day),
+        stringResource(R.string.period_week),
+        stringResource(R.string.period_month))
     Box {
         SingleChoiceSegmentedButtonRow(
             modifier = Modifier
